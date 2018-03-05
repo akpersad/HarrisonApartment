@@ -18,8 +18,26 @@ const handlers = {
         this.emit(':ask', welcomeMessage, 'Try again.');
     },
 
-    'TestIntent' : function () {
+    'SillyIntent' : function () {
         this.emit(':tell', 'Nom nom nom');
+    },
+
+    'GroceryListIntent': function() {
+        var groceryList = new Array();
+        var groceryList2 = new Array();
+        var grocery = this.event.request.intent.slots.grocery.value;
+        groceryList.push(grocery);
+        var answer = "Okay, I've saved " + grocery + " to your grocery list. Can I add anything else to it?";
+
+        storage.getListItems(this.event.session, (callback) => {
+            groceryList2 = callback.GroceryArray
+        });
+
+        groceryList.push(groceryList2);
+
+        storage.saveListItems(groceryList, this.event.session, (callback) => {
+            this.emit(':ask', answer);
+        });
     },
 
     // 'EventLookupIntent': function () {
@@ -167,7 +185,7 @@ const handlers = {
 // {
 //     "session": {
 //         "new": true,
-//             "sessionId": "SessionId.f3117e67-c428-46af-a37b-7997a084e934",
+//             "sessionId": "SessionId.29804f83-ec9c-4e39-8fb4-42ac7caa7a27",
 //                 "application": {
 //             "applicationId": "amzn1.ask.skill.32f73371-3de1-4a20-86d8-c9537b76f196"
 //         },
@@ -178,13 +196,18 @@ const handlers = {
 //     },
 //     "request": {
 //         "type": "IntentRequest",
-//             "requestId": "EdwRequestId.c1293994-1643-47fc-81d3-a1b0b5e495a7",
+//             "requestId": "EdwRequestId.79000cc2-286b-4617-96d8-8c5c7af30f53",
 //                 "intent": {
-//             "name": "TestIntent",
-//                 "slots": { }
+//             "name": "GroceryListIntent",
+//                 "slots": {
+//                 "grocery": {
+//                     "name": "grocery",
+//                         "value": "apples"
+//                 }
+//             }
 //         },
 //         "locale": "en-US",
-//             "timestamp": "2018-03-04T21:15:42Z"
+//             "timestamp": "2018-03-05T05:29:22Z"
 //     },
 //     "context": {
 //         "AudioPlayer": {
